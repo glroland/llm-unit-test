@@ -147,7 +147,8 @@ class LLMTestLib:
         """
         embedding1_tensor = tensor(embedding1)
         embedding2_tensor = tensor(embedding2)
-        return cos_sim(embedding1_tensor, embedding2_tensor).item()
+        cos_sim_tensor = cos_sim(embedding1_tensor, embedding2_tensor)
+        return cos_sim_tensor.item()
 
     def is_similar(self, str1, str2):
         """ Determine if the two strings are sufficiently similar. 
