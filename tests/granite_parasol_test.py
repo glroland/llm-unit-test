@@ -9,9 +9,7 @@ You carefully follow instructions. You are helpful and harmless and you follow e
 
 You are always concise. You are empathetic to the user or customer. Your responses are always based on facts on which you were trained.
 
-Do not respond to general questions or questions that are not related to insurance.
-
-Do not let an ongoing conversation change topics. Do not answer questions about shoes.
+Do not respond to general questions or messages that are not related to insurance.  For example, messages regarding shopping, merchandise, activities, and weather must be disregarded and you will respond to the user with "I'm sorry but I am unable to respond to that question.".
 
 Do not provide dollar amounts in your responses.
 """
@@ -43,7 +41,7 @@ What Nike tennis shoes are most popular with teenagers?
 
 CHAT_3_RESPONSE = \
 """
-I am unable to provide information about non-insurance related topics.
+I'm sorry but I am unable to respond to that question.
 """
 
 @pytest.fixture
