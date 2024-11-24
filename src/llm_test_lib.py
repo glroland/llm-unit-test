@@ -5,7 +5,7 @@ import logging
 from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.util import cos_sim
-from torch import tensor
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,13 @@ class LLMTestLib:
     base_url = None
     token = None
     model = None
-    similarity_threshold = 0.8
+
+    # Prior Setting was .8
+    # NOTE - This model or this technique doesn't do a great job of gauging similarity in
+    # meaning.  For example, the response might mean the same thing but be more specific
+    # in its response - i.e., No, I don't do XYZ.  But the similarty check could be something
+    # like "No, I only do ABC".  The similarity score becomes near 50% in this case.
+    similarity_threshold = 0.5
 
     def __init__(self,
                  base_url = None,
@@ -135,7 +141,7 @@ class LLMTestLib:
             msg = "get_embeddings_for_str() was passed an empty list of strings"
             logger.error(msg)
             raise ValueError(msg)
-        
+
         sentence_transformer = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
         return sentence_transformer.encode(str_list)
 
@@ -145,8 +151,8 @@ class LLMTestLib:
             embedding1 - embedding 1
             embedding2 - embedding 2
         """
-        embedding1_tensor = tensor(embedding1)
-        embedding2_tensor = tensor(embedding2)
+        embedding1_tensor = torch.tensor(embedding1)
+        embedding2_tensor = torch.tensor(embedding2)
         cos_sim_tensor = cos_sim(embedding1_tensor, embedding2_tensor)
         return cos_sim_tensor.item()
 
@@ -174,49 +180,47 @@ class LLMTestLib:
 
         return similarity >= self.similarity_threshold
 
+#def uppercase_decorator(function):
+#    def wrapper():
+#        func = function()
+#        make_uppercase = func.upper()
+#        return make_uppercase
+#
+#    return wrapper
 
-def uppercase_decorator(function):
-    def wrapper():
-        func = function()
-        make_uppercase = func.upper()
-        return make_uppercase
+#def a_decorator_passing_arbitrary_arguments(function_to_decorate):
+#    def a_wrapper_accepting_arbitrary_arguments(*args,**kwargs):
+#        print('The positional arguments are', args)
+#        print('The keyword arguments are', kwargs)
+#        function_to_decorate(*args)
+#    return a_wrapper_accepting_arbitrary_arguments
 
-    return wrapper
+#@a_decorator_passing_arbitrary_arguments
+#def function_with_no_argument():
+#    print("No arguments here.")
+#
+#function_with_no_argument()
 
-def a_decorator_passing_arbitrary_arguments(function_to_decorate):
-    def a_wrapper_accepting_arbitrary_arguments(*args,**kwargs):
-        print('The positional arguments are', args)
-        print('The keyword arguments are', kwargs)
-        function_to_decorate(*args)
-    return a_wrapper_accepting_arbitrary_arguments
+#def decorator_maker_with_arguments(decorator_arg1, decorator_arg2, decorator_arg3):
+#    def decorator(func):
+#        def wrapper(function_arg1, function_arg2, function_arg3) :
+#            "This is the wrapper function"
+#            print("The wrapper can access all the variables\n"
+#                  "\t- from the decorator maker: {0} {1} {2}\n"
+#                  "\t- from the function call: {3} {4} {5}\n"
+#                  "and pass them to the decorated function"
+#                  .format(decorator_arg1, decorator_arg2,decorator_arg3,
+#                          function_arg1, function_arg2,function_arg3))
+#            return func(function_arg1, function_arg2,function_arg3)
+#
+#        return wrapper
+#
+#    return decorator
 
-@a_decorator_passing_arbitrary_arguments
-def function_with_no_argument():
-    print("No arguments here.")
-
-function_with_no_argument()
-
-
-def decorator_maker_with_arguments(decorator_arg1, decorator_arg2, decorator_arg3):
-    def decorator(func):
-        def wrapper(function_arg1, function_arg2, function_arg3) :
-            "This is the wrapper function"
-            print("The wrapper can access all the variables\n"
-                  "\t- from the decorator maker: {0} {1} {2}\n"
-                  "\t- from the function call: {3} {4} {5}\n"
-                  "and pass them to the decorated function"
-                  .format(decorator_arg1, decorator_arg2,decorator_arg3,
-                          function_arg1, function_arg2,function_arg3))
-            return func(function_arg1, function_arg2,function_arg3)
-
-        return wrapper
-
-    return decorator
-
-pandas = "Pandas"
-@decorator_maker_with_arguments(pandas, "Numpy","Scikit-learn")
-def decorated_function_with_arguments(function_arg1, function_arg2,function_arg3):
-    print("This is the decorated function and it only knows about its arguments: {0}"
-           " {1}" " {2}".format(function_arg1, function_arg2,function_arg3))
-
-decorated_function_with_arguments(pandas, "Science", "Tools")
+#pandas = "Pandas"
+#@decorator_maker_with_arguments(pandas, "Numpy","Scikit-learn")
+#def decorated_function_with_arguments(function_arg1, function_arg2,function_arg3):
+#    print("This is the decorated function and it only knows about its arguments: {0}"
+#           " {1}" " {2}".format(function_arg1, function_arg2,function_arg3))
+#
+#decorated_function_with_arguments(pandas, "Science", "Tools")

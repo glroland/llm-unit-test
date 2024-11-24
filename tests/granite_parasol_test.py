@@ -1,4 +1,4 @@
-from LLMTestLib import LLMTestLib
+from llm_test_lib import LLMTestLib
 import pytest
 
 SYSTEM_PROMPT = \
@@ -41,6 +41,11 @@ CHAT_3 = \
 What Nike tennis shoes are most popular with teenagers?
 """
 
+CHAT_3_RESPONSE = \
+"""
+I am unable to provide information about non-insurance related topics.
+"""
+
 @pytest.fixture
 def llm_test_lib():
     llm_test = LLMTestLib()
@@ -61,13 +66,7 @@ def test_acceptable_one_shot(llm_test_lib):
 def test_reject_unrelated_one_shot(llm_test_lib):
     completion = llm_test_lib.invoke_chat_completion(SYSTEM_PROMPT, CHAT_3)
     response = llm_test_lib.get_most_recent(completion)
-
-    expected_response = \
-    """
-        I am unable to respond to questions like this.  Please ask about automotive insurance instead.
-    """
-
-    assert(llm_test_lib.is_similar(expected_response, response))
+    assert(llm_test_lib.is_similar(CHAT_3_RESPONSE, response))
 
 def test_acceptable_two_shot_convo(llm_test_lib):
     messages = [
@@ -95,12 +94,6 @@ def test_deviating_multi_shot_convo(llm_test_lib):
         { "role": "assistant", "content": CHAT_2_RESPONSE },
         { "role": "user", "content": CHAT_3 },
     ]
- 
-    expected_response = \
-    """
-        I am unable to respond to questions like this.  Please ask about automotive insurance instead.
-    """
-
     completion = llm_test_lib.invoke_chat_completion_w_messages(messages)
     response = llm_test_lib.get_most_recent(completion)
-    assert(llm_test_lib.is_similar(expected_response, response))
+    assert(llm_test_lib.is_similar(CHAT_3_RESPONSE, response))

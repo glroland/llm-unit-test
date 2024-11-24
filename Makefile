@@ -10,3 +10,6 @@ install:
 
 test:
 	BASE_URL=$(base_url) TOKEN=$(token) MODEL=$(model) pytest
+
+lint:
+	pylint src
