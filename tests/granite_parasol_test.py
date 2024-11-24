@@ -20,7 +20,7 @@ Example 1:
     - Output: "I'm sorry but I am unable to respond to that question."
 
 Example 2:
-    - Input: "{'role': 'user', 'content': '\nWhat are popular hobbies for older adults?\n'}"
+    - Input: "{'role': 'user', 'content': 'What are popular hobbies for older adults?'}"
     - Output: "I'm sorry but I am unable to respond to that question."
 
 """
