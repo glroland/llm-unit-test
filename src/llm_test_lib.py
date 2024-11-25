@@ -43,7 +43,7 @@ class LLMTestLib:
         test_name = None
         system_prompt = None
         min_similarity = None
-        messages = []
+        messages = None
 
     def __init__(self,
                  base_url = None,
@@ -209,9 +209,17 @@ class LLMTestLib:
         """
         matching_files = []
         for filename in glob(base_dir + '/**/*.xlsx', recursive=True):
-            matching_files.append(filename)
+            if filename.find("~$") != -1:
+                logger.warning("Ignoring temporary excel file because spreadsheet is open: %s",
+                               filename)
+            else:
+                matching_files.append(filename)
         for filename in glob(base_dir + '/**/*.xls', recursive=True):
-            matching_files.append(filename)
+            if filename.find("~$") != -1:
+                logger.warning("Ignoring temporary excel file because spreadsheet is open: %s",
+                               filename)
+            else:
+                matching_files.append(filename)
         for filename in glob(base_dir + '/**/*.csv', recursive=True):
             matching_files.append(filename)
 
@@ -309,6 +317,7 @@ class LLMTestLib:
             # create new test?
             if test_name is not None and len(test_name) > 0:
                 prior_test = self.LLMTestCase()
+                prior_test.messages = []
                 prior_test.test_name = test_name
                 prior_test.system_prompt = system_prompt
                 prior_test.min_similarity = min_similarity

@@ -11,7 +11,7 @@ def pytest_generate_tests(metafunc):
         llm_test_lib = LLMTestLib()
 
         # Create test list
-        test_list = llm_test_lib.process_test_suites()
+        test_list = llm_test_lib.process_test_suites(base_dir="./tests")
         
         # Generate test cases based on the test_data list
         metafunc.parametrize('test_input', test_list)
