@@ -31,8 +31,12 @@ class LLMTestLib:
     # like "No, I only do ABC".  The similarity score becomes near 50% in this case.
     similarity_threshold = 0.5
 
+    # pylint: disable=too-few-public-methods
     class LLMTestCase:
+        """ Test Case Definition """
+        # pylint: disable=too-few-public-methods
         class Message:
+            """ Message Entry Definition """
             user_message = None
             expected_response = None
 
@@ -234,14 +238,14 @@ class LLMTestLib:
             raise ValueError(msg)
         file_extension = file_extension[1:]
         logger.info("File %s has Extension (%s)", filename, file_extension)
-    
+
         df = None
 
         # load excel file
         if file_extension.lower() in ["xls", "xlsx"]:
             logger.info("Loading Excel File: %s", filename)
             df = pd.read_excel(filename)
-    
+
         # load csv file
         if file_extension.lower() in ["csv"]:
             logger.info("Loading CSV File: %s", filename)
@@ -271,6 +275,7 @@ class LLMTestLib:
 
         # process the data frame, one row at a time
         prior_test = None
+        # pylint: disable=unused-variable
         for index, row in df.iterrows():
             # extract data
             row_index = row.iloc[0]
@@ -291,8 +296,10 @@ class LLMTestLib:
             min_similarity = row.iloc[5]
             if pd.isna(min_similarity):
                 min_similarity = None
-            logger.info("Test Row.  RowIndex=%s TestName=%s SysPrompt=%s UserMsg=%s ExpResp=%s MinSimil=%s",
-                        row_index, test_name, system_prompt, user_message, expected_response, min_similarity)
+            logger.info("Test Row.  RowIndex=%s TestName=%s SysPrompt=%s " + \
+                        "UserMsg=%s ExpResp=%s MinSimil=%s",
+                        row_index, test_name, system_prompt,
+                        user_message, expected_response, min_similarity)
 
             # create message row
             message = self.LLMTestCase.Message()
@@ -306,7 +313,7 @@ class LLMTestLib:
                 prior_test.system_prompt = system_prompt
                 prior_test.min_similarity = min_similarity
                 test_list.append(prior_test)
- 
+
             # append user messages to chained test list
             prior_test.messages.append(message)
 
