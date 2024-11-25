@@ -2,10 +2,12 @@
 """
 import os
 import logging
+from glob import glob
 from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.util import cos_sim
 import torch
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +30,16 @@ class LLMTestLib:
     # in its response - i.e., No, I don't do XYZ.  But the similarty check could be something
     # like "No, I only do ABC".  The similarity score becomes near 50% in this case.
     similarity_threshold = 0.5
+
+    class LLMTestCase:
+        class Message:
+            user_message = None
+            expected_response = None
+
+        test_name = None
+        system_prompt = None
+        min_similarity = None
+        messages = []
 
     def __init__(self,
                  base_url = None,
@@ -179,6 +191,131 @@ class LLMTestLib:
                     similarity, self.similarity_threshold, str1, str2)
 
         return similarity >= self.similarity_threshold
+
+    def find_spreadsheets(self, base_dir = "."):
+        """ Create a list of spreadsheets in the provided base directory, recursively.
+        
+            base_dir - base directory
+        """
+        matching_files = []
+        for filename in glob(base_dir + '/**/*.xlsx', recursive=True):
+            matching_files.append(filename)
+        for filename in glob(base_dir + '/**/*.xls', recursive=True):
+            matching_files.append(filename)
+        for filename in glob(base_dir + '/**/*.csv', recursive=True):
+            matching_files.append(filename)
+
+        return matching_files
+
+    def read_file(self, filename):
+        """ Read the specified test data file.
+        
+            filename - filename
+        """
+        # validate parameters
+        logger.info("Type= %s", type(filename))
+
+        if filename is None or len(filename) == 0:
+            msg = "read_file() - filename is empty!"
+            logger.error(msg)
+            raise ValueError(msg)
+
+        # get file extension
+        file_extension = os.path.splitext(filename)[1]
+        if file_extension is None or len(file_extension) <= 1:
+            msg = f"read_file() - file extension could not be identified.  {filename}"
+            logger.error(msg)
+            raise ValueError(msg)
+        file_extension = file_extension[1:]
+        logger.info("File %s has Extension (%s)", filename, file_extension)
+    
+        df = None
+
+        # load excel file
+        if file_extension.lower() in ["xls", "xlsx"]:
+            logger.info("Loading Excel File: %s", filename)
+            df = pd.read_excel(filename)
+    
+        # load csv file
+        if file_extension.lower() in ["csv"]:
+            logger.info("Loading CSV File: %s", filename)
+            df = pd.read_csv(filename)
+
+        # validate that a file was actually loaded
+        if df is None:
+            msg = f"Unable to load file! {filename}"
+            logger.error(msg)
+            raise ValueError(msg)
+
+        logger.info("Loaded Data File.  %s", filename)
+        return df
+
+    def process_test_suite_df(self, df):
+        """ Extract all the tests from the dataframe
+        
+            df - data frame containing tests
+        """
+        # validate arguments
+        if df is None:
+            msg = "process_test_suite_df() - Provided data frame is null"
+            logger.error(msg)
+            raise ValueError(msg)
+
+        test_list = []
+
+        # process the data frame, one row at a time
+        prior_test = None
+        for index, row in df.iterrows():
+            # extract data
+            row_index = row.iloc[0]
+            test_name = row.iloc[1]
+            system_prompt = row.iloc[2]
+            user_message = row.iloc[3]
+            expected_response = row.iloc[4]
+            min_similarity = row.iloc[5]
+            logger.info("Test Row.  RowIndex=%s TestName=%s SysPrompt=%s UserMsg=%s ExpResp=%s MinSimil=%s",
+                        row_index, test_name, system_prompt, user_message, expected_response, min_similarity)
+
+            # create message row
+            message = self.LLMTestCase.Message()
+            message.user_message = user_message
+            message.expected_response = expected_response
+
+            # create new test?
+            if not pd.isna(test_name) and test_name is not None and len(test_name) > 0:
+                prior_test = self.LLMTestCase()
+                prior_test.test_name = test_name
+                prior_test.system_prompt = system_prompt
+                prior_test.min_similarity = min_similarity
+                test_list.append(prior_test)
+ 
+            # append user messages to chained test list
+            prior_test.messages.append(message)
+
+        return test_list
+
+
+    def process_test_suites(self, base_dir = "."):
+        """ Process all the tests stored in spreadsheets recursively found in the base dir
+        
+            base_dir - base directory
+        """
+        test_list = []
+
+        logger.info("Searching for spreadsheets in folder: %s", base_dir)
+        spreadsheets = self.find_spreadsheets(base_dir)
+        for spreadsheet in spreadsheets:
+            logger.info("Loading sheet...  %s", spreadsheet)
+            df = self.read_file(spreadsheet)
+
+            logger.info("Processing tests...  %s", spreadsheet)
+            df_tests = self.process_test_suite_df(df)
+
+            logger.info("# of tests loaded....  %s", len(df_tests))
+            test_list.extend(df_tests)
+
+        return test_list
+
 
 #def uppercase_decorator(function):
 #    def wrapper():

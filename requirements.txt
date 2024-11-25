@@ -2,3 +2,5 @@ pylint
 pytest
 openai
 sentence-transformers
+pandas
+openpyxl
