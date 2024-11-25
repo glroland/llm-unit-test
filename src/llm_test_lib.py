@@ -168,11 +168,12 @@ class LLMTestLib:
         cos_sim_tensor = cos_sim(embedding1_tensor, embedding2_tensor)
         return cos_sim_tensor.item()
 
-    def is_similar(self, str1, str2):
+    def is_similar(self, str1, str2, override_min_similarity=None):
         """ Determine if the two strings are sufficiently similar. 
         
             str1 - string 1
             str2 - string 2
+            override_min_similarity - override of min similarity (optional)
         """
         # validate arguments
         if str1 is None or len(str1) == 0:
@@ -190,7 +191,12 @@ class LLMTestLib:
         logger.info("Similarity Results.  CS=%s  T=%s  S1=%s  S2=%s",
                     similarity, self.similarity_threshold, str1, str2)
 
-        return similarity >= self.similarity_threshold
+        # determine which similarity threshold to use
+        threshold = self.similarity_threshold
+        if override_min_similarity is not None:
+            threshold = override_min_similarity
+            logger.info("Using Min Similarity Override.  %s", threshold)
+        return similarity >= threshold
 
     def find_spreadsheets(self, base_dir = "."):
         """ Create a list of spreadsheets in the provided base directory, recursively.
@@ -268,11 +274,23 @@ class LLMTestLib:
         for index, row in df.iterrows():
             # extract data
             row_index = row.iloc[0]
+            if pd.isna(row_index):
+                row_index = None
             test_name = row.iloc[1]
+            if pd.isna(test_name):
+                test_name = None
             system_prompt = row.iloc[2]
+            if pd.isna(system_prompt):
+                system_prompt = None
             user_message = row.iloc[3]
+            if pd.isna(user_message):
+                user_message = None
             expected_response = row.iloc[4]
+            if pd.isna(expected_response):
+                expected_response = None
             min_similarity = row.iloc[5]
+            if pd.isna(min_similarity):
+                min_similarity = None
             logger.info("Test Row.  RowIndex=%s TestName=%s SysPrompt=%s UserMsg=%s ExpResp=%s MinSimil=%s",
                         row_index, test_name, system_prompt, user_message, expected_response, min_similarity)
 
@@ -282,7 +300,7 @@ class LLMTestLib:
             message.expected_response = expected_response
 
             # create new test?
-            if not pd.isna(test_name) and test_name is not None and len(test_name) > 0:
+            if test_name is not None and len(test_name) > 0:
                 prior_test = self.LLMTestCase()
                 prior_test.test_name = test_name
                 prior_test.system_prompt = system_prompt

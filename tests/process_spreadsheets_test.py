@@ -43,4 +43,4 @@ def test_spreadsheets(test_input):
 
     completion = llm_test_lib.invoke_chat_completion_w_messages(messages)
     response = llm_test_lib.get_most_recent(completion)
-    assert(llm_test_lib.is_similar(last_expected_response, response))
+    assert(llm_test_lib.is_similar(last_expected_response, response, test_input.min_similarity))
