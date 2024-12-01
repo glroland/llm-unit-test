@@ -9,7 +9,7 @@ install:
 	pip install -r requirements.txt
 
 test:
-	BASE_URL=$(base_url) TOKEN=$(token) MODEL=$(model) pytest
+	OPENAI_API_KEY=$(token) BASE_URL=$(base_url) TOKEN=$(token) MODEL=$(model) pytest
 
 lint:
 	pylint src

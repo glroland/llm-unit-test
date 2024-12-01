@@ -1,0 +1,101 @@
+__  ____  __  _____   ___  __ ____  ______ 
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
+ -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/   
+2024-12-01 22:32:36,692 INFO  [io.quarkus] (Quarkus Main Thread) insurance-app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.17.2) started in 0.746s. Listening on: http://0.0.0.0:8080
+
+2024-12-01 22:32:36,693 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-12-01 22:32:36,693 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-h2, langchain4j, langchain4j-openai, langchain4j-websockets-next, narayana-jta, opentelemetry, quinoa, qute, rest, rest-client, rest-client-jackson, rest-jackson, smallrye-context-propagation, vertx, websockets-next]
+2024-12-01 22:32:36,693 INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 0.793s 
+2024-12-01 22:33:45,426 INFO  [io.qua.lan.ope.com.OpenAiRestApi$OpenAiClientLogger] (vert.x-eventloop-thread-2) Request:
+- method: POST
+- url: http://parasol-chat-predictor.aiworkshop.svc.cluster.local:8080/v1/chat/completions
+- headers: [Accept: application/json], [Authorization: Be...my], [Content-Type: application/json], [User-Agent: langchain4j-openai], [content-length: 1414]
+- body: {
+  "model" : "parasol-chat",
+  "messages" : [ {
+    "role" : "system",
+    "content" : "You are an insurance expert at Parasol Insurance who specializes in insurance rules, regulations, and policies.  You carefully follow instructions. You are helpful and harmless and you follow ethical guidelines and promote positive behavior.  You are always concise. You are empathetic to the user or customer. Your responses are always based on facts on which you were trained.  Do not respond to general questions or messages that are not related to insurance.  For example, messages regarding shopping, merchandise, activities, and weather must be disregarded and you will respond to the user with \"\"I'm sorry but I am unable to respond to that question.\"\".  Do not provide dollar amounts in your responses.  Here are examples to guide your responses:  Example 1:     - Input: \"What brands of cars are best for offroading?\"     - Output: \"I'm sorry but I am unable to respond to that question.\"  Example 2:     - Input: \"What are popular hobbies for older adults?\"     - Output: \"I'm sorry but I am unable to respond to that question.\""
+  }, {
+    "role" : "user",
+    "content" : "Is rental car coverage included in the most basic vehicle insurance policy?"
+  } ],
+  "temperature" : 0.3,
+  "top_p" : 1.0,
+  "stop" : [ "DONE", "done", "stop", "STOP" ],
+  "presence_penalty" : 0.0,
+  "frequency_penalty" : 0.0
+}
+
+2024-12-01 22:33:48,259 INFO  [io.qua.lan.ope.com.OpenAiRestApi$OpenAiClientLogger] (vert.x-eventloop-thread-2) Response:
+- status code: 200
+- headers: [date: Sun, 01 Dec 2024 22:33:45 GMT], [server: uvicorn], [content-length: 692], [content-type: application/json]
+- body: {"id":"chat-368cc00e1c8d40c480216c0f871990f4","object":"chat.completion","created":1733092425,"model":"parasol-chat","choices":[{"index":0,"message":{"role":"assistant","content":"Rental car coverage is not included in the most basic vehicle insurance policy. It is an optional add-on that provides reimbursement for daily rental charges when an insured rents a car from a car business while their car or newly acquired car is not driveable or being repaired as a result of a loss covered under comprehensive coverage.","tool_calls":[]},"logprobs":null,"finish_reason":"stop","stop_reason":null}],"usage":{"prompt_tokens":270,"total_tokens":343,"completion_tokens":73},"prompt_logprobs":null}
+
+2024-12-01 22:33:51,263 INFO  [io.qua.lan.ope.com.OpenAiRestApi$OpenAiClientLogger] (vert.x-eventloop-thread-2) Request:
+- method: POST
+- url: http://parasol-chat-predictor.aiworkshop.svc.cluster.local:8080/v1/chat/completions
+- headers: [Accept: application/json], [Authorization: Be...my], [Content-Type: application/json], [User-Agent: langchain4j-openai], [content-length: 1873]
+- body: {
+  "model" : "parasol-chat",
+  "messages" : [ {
+    "role" : "system",
+    "content" : "You are an insurance expert at Parasol Insurance who specializes in insurance rules, regulations, and policies.  You carefully follow instructions. You are helpful and harmless and you follow ethical guidelines and promote positive behavior.  You are always concise. You are empathetic to the user or customer. Your responses are always based on facts on which you were trained.  Do not respond to general questions or messages that are not related to insurance.  For example, messages regarding shopping, merchandise, activities, and weather must be disregarded and you will respond to the user with \"\"I'm sorry but I am unable to respond to that question.\"\".  Do not provide dollar amounts in your responses.  Here are examples to guide your responses:  Example 1:     - Input: \"What brands of cars are best for offroading?\"     - Output: \"I'm sorry but I am unable to respond to that question.\"  Example 2:     - Input: \"What are popular hobbies for older adults?\"     - Output: \"I'm sorry but I am unable to respond to that question.\""
+  }, {
+    "role" : "user",
+    "content" : "Is rental car coverage included in the most basic vehicle insurance policy?"
+  }, {
+    "role" : "assistant",
+    "content" : "Rental car coverage is not included in the most basic vehicle insurance policy. It is an optional add-on that provides reimbursement for daily rental charges when an insured rents a car from a car business while their car or newly acquired car is not driveable or being repaired as a result of a loss covered under comprehensive coverage."
+  }, {
+    "role" : "user",
+    "content" : "How much does it cost?"
+  } ],
+  "temperature" : 0.3,
+  "top_p" : 1.0,
+  "stop" : [ "DONE", "done", "stop", "STOP" ],
+  "presence_penalty" : 0.0,
+  "frequency_penalty" : 0.0
+}
+
+2024-12-01 22:33:52,789 INFO  [io.qua.lan.ope.com.OpenAiRestApi$OpenAiClientLogger] (vert.x-eventloop-thread-2) Response:
+- status code: 200
+- headers: [date: Sun, 01 Dec 2024 22:33:50 GMT], [server: uvicorn], [content-length: 507], [content-type: application/json]
+- body: {"id":"chat-6c26462d7d774caba7789cf5e7cf662e","object":"chat.completion","created":1733092431,"model":"parasol-chat","choices":[{"index":0,"message":{"role":"assistant","content":"The cost of rental car coverage varies depending on the insurance company and the specific policy. However, it typically ranges from $50 to $100 per day.","tool_calls":[]},"logprobs":null,"finish_reason":"stop","stop_reason":null}],"usage":{"prompt_tokens":358,"total_tokens":396,"completion_tokens":38},"prompt_logprobs":null}
+
+2024-12-01 22:33:56,749 INFO  [io.qua.lan.ope.com.OpenAiRestApi$OpenAiClientLogger] (vert.x-eventloop-thread-2) Request:
+- method: POST
+- url: http://parasol-chat-predictor.aiworkshop.svc.cluster.local:8080/v1/chat/completions
+- headers: [Accept: application/json], [Authorization: Be...my], [Content-Type: application/json], [User-Agent: langchain4j-openai], [content-length: 2180]
+- body: {
+  "model" : "parasol-chat",
+  "messages" : [ {
+    "role" : "system",
+    "content" : "You are an insurance expert at Parasol Insurance who specializes in insurance rules, regulations, and policies.  You carefully follow instructions. You are helpful and harmless and you follow ethical guidelines and promote positive behavior.  You are always concise. You are empathetic to the user or customer. Your responses are always based on facts on which you were trained.  Do not respond to general questions or messages that are not related to insurance.  For example, messages regarding shopping, merchandise, activities, and weather must be disregarded and you will respond to the user with \"\"I'm sorry but I am unable to respond to that question.\"\".  Do not provide dollar amounts in your responses.  Here are examples to guide your responses:  Example 1:     - Input: \"What brands of cars are best for offroading?\"     - Output: \"I'm sorry but I am unable to respond to that question.\"  Example 2:     - Input: \"What are popular hobbies for older adults?\"     - Output: \"I'm sorry but I am unable to respond to that question.\""
+  }, {
+    "role" : "user",
+    "content" : "Is rental car coverage included in the most basic vehicle insurance policy?"
+  }, {
+    "role" : "assistant",
+    "content" : "Rental car coverage is not included in the most basic vehicle insurance policy. It is an optional add-on that provides reimbursement for daily rental charges when an insured rents a car from a car business while their car or newly acquired car is not driveable or being repaired as a result of a loss covered under comprehensive coverage."
+  }, {
+    "role" : "user",
+    "content" : "How much does it cost?"
+  }, {
+    "role" : "assistant",
+    "content" : "The cost of rental car coverage varies depending on the insurance company and the specific policy. However, it typically ranges from $50 to $100 per day."
+  }, {
+    "role" : "user",
+    "content" : "What Nike tennis shoes are most popular with teenagers?"
+  } ],
+  "temperature" : 0.3,
+  "top_p" : 1.0,
+  "stop" : [ "DONE", "done", "stop", "STOP" ],
+  "presence_penalty" : 0.0,
+  "frequency_penalty" : 0.0
+}
+
+2024-12-01 22:33:59,799 INFO  [io.qua.lan.ope.com.OpenAiRestApi$OpenAiClientLogger] (vert.x-eventloop-thread-2) Response:
+- status code: 200
+- headers: [date: Sun, 01 Dec 2024 22:33:56 GMT], [server: uvicorn], [content-length: 635], [content-type: application/json]
+- body: {"id":"chat-05afe6249048458d9ed9ae728621b72d","object":"chat.completion","created":1733092436,"model":"parasol-chat","choices":[{"index":0,"message":{"role":"assistant","content":"The Nike Air Jordan 1 is the most popular Nike tennis shoe with teenagers. It is a classic design that has been around for decades and is still highly sought after by young people. Other popular Nike tennis shoes with teenagers include the Nike Air Force 1 and the Nike Blazer Mid.","tool_calls":[]},"logprobs":null,"finish_reason":"stop","stop_reason":null}],"usage":{"prompt_tokens":421,"total_tokens":499,"completion_tokens":78},"prompt_logprobs":null}
