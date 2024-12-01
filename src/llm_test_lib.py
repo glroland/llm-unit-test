@@ -16,13 +16,25 @@ class LLMTestLib:
     ENV_BASE_URL = "BASE_URL"
     ENV_TOKEN = "TOKEN"
     ENV_MODEL = "MODEL"
+    ENV_TEMP = "TEMP"
+    ENV_TOP_P = "TOP_P"
+    ENV_PP = "PP"
+    ENV_FP = "FP"
     DEFAULT_BASE_URL = "http://localhost:8000/v1"
     DEFAULT_TOKEN = "none"
     DEFAULT_MODEL = None
+    DEFAULT_TEMP = None
+    DEFAULT_TOP_P = None
+    DEFAULT_PP = None
+    DEFAULT_FP = None
 
     base_url = None
     token = None
     model = None
+    temperature = None
+    top_p = None
+    presence_penalty = None
+    frequency_penalty = None
 
     # Prior Setting was .8
     # NOTE - This model or this technique doesn't do a great job of gauging similarity in
@@ -48,12 +60,20 @@ class LLMTestLib:
     def __init__(self,
                  base_url = None,
                  token = None,
-                 model = None):
+                 model = None,
+                 temperature = None,
+                 top_p = None,
+                 presence_penalty = None,
+                 frequency_penalty = None):
         """ Default Constructor
         
             base_url - inference service api endpoint
             token - api token
             model - model to execute prompts against
+            temperature - temperature
+            top_p - top p
+            presence_penalty - presence penalty
+            frequency_penalty - frequency penalty
         """
         # Set Base URL
         if base_url is not None:
@@ -75,6 +95,38 @@ class LLMTestLib:
         else:
             self.model = self.get_config_value(self.ENV_MODEL,
                                                self.DEFAULT_MODEL)
+
+        # Set Temperature
+        if temperature is not None:
+            self.temperature = temperature
+        else:
+            self.temperature = float(self.get_config_value(self.ENV_TEMP,
+                                               self.DEFAULT_TEMP))
+
+        # Set Top P
+        if top_p is not None:
+            self.top_p = top_p
+        else:
+            self.top_p = float(self.get_config_value(self.ENV_TOP_P,
+                                               self.DEFAULT_TOP_P))
+
+        # Set Presence Penalty
+        if presence_penalty is not None:
+            self.presence_penalty = presence_penalty
+        else:
+            self.presence_penalty = float(self.get_config_value(self.ENV_PP,
+                                               self.DEFAULT_PP))
+
+        # Set Frequency Penalty
+        if frequency_penalty is not None:
+            self.frequency_penalty = frequency_penalty
+        else:
+            self.frequency_penalty = float(self.get_config_value(self.ENV_FP,
+                                               self.DEFAULT_FP))
+
+        # Log settings
+        logger.info("OpenAI Settings: Temp=%s TopP=%s PP=%s FP=%s", self.temperature,
+                    self.top_p, self.presence_penalty, self.frequency_penalty)
 
     def get_config_value(self, env_name, default_value):
         """ Get a config value from an environment variable.
@@ -112,7 +164,10 @@ class LLMTestLib:
         completion = client.chat.completions.create(
             model=self.model,
             messages=messages,
-            temperature=0,
+            temperature=self.temperature,
+            top_p = self.top_p,
+            presence_penalty = self.presence_penalty,
+            frequency_penalty = self.frequency_penalty
         )
 
         return completion
