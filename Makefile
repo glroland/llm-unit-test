@@ -4,8 +4,8 @@
 base_url ?= http://ocpwork:8000/v1
 token ?= "none"
 model ?= granite-3-parasol-instruct
-#temp ?= 0.3
-temp ?= 0.0
+temp ?= 0.3
+#temp ?= 0.0
 top_p ?= 1
 pp ?= 0
 fp ?= 0
